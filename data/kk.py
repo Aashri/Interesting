@@ -7,16 +7,16 @@ import numpy as np
 from PIL import ImageGrab as ig
 import cv2
 import time
-
+from .components import info
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Conv2D, MaxPooling2D, Flatten, Dropout
 from keras.optimizers import SGD
-model_built = 0
+model_built = False
 load_saved = False
 save_current_pool = 1
 current_pool = []
 fitness = []
-total_models = 6
+total_models = 12
 generation = 1
 
 def save_pool():
@@ -46,9 +46,15 @@ def predict_action(neural_input, model_num):
     neural_input = np.expand_dims(neural_input,axis=3)
     neural_input = np.atleast_2d(neural_input) #(560, 750, 3)
     neural_input = np.expand_dims(neural_input,axis=0)
+    
     output_prob = current_pool[model_num].predict([neural_input])
     x = np.argmax(output_prob)
     print(output_prob," => ",generated_input[x])
+    #if info.current_time % 5 == 0:
+     #   x = 1
+    #else:
+     #   x = 0
+
     print("===> ", model_num)
     print(model_num)
     return generated_input[x]
@@ -78,12 +84,12 @@ def collect_frame():
     
 def do_it_genetically(model_num):
     global model_built
-    if not model_built:
-        if load_saved:
+    if not model_built: #ek toh model built ki value jo hai woh 0 hai !!
+        if load_saved:#load save ki boolean value kaha change hori hai?
             load_saved_pool()
         else:
             init_models()
-    frame = collect_frame()
+    frame = collect_frame()#frame of picture collect kr rhe
     if not model_built:
         model_built = True
     return predict_action(frame,model_num)

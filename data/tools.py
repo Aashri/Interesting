@@ -72,13 +72,20 @@ class Control(object):
         if gap_between_keypress % 30 == 0:
             gap_between_keypress = 1
             global model_number
-            to_press = kk.do_it_genetically(model_number) #logic
-        kkb.press(to_press)
-        # print(self.state_dict,self.state,self.state_name)
-        if to_press == Key.right:
+            to_press = kk.do_it_genetically(model_number)
+            print(current_pool[model_number].get_weights(),model_number)#logic
+            #from the model we are getting the key which is to be pressed. 
+            # print(self.state_dict,self.state,self.state_name)
             global current_fitness
-            current_fitness += 2
-
+            if to_press == Key.right:
+                print("fitness increses with 2")
+                current_fitness += 2
+                
+            if to_press == 'a':
+                print("fitness increses with 100")
+                current_fitness += 100
+        kkb.press(to_press)
+        
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.done = True
@@ -92,13 +99,15 @@ class Control(object):
 
     def mar_gya(self):
         global model_number,temp_for_model_num_bug
-        if not temp_for_model_num_bug:
+        if not temp_for_model_num_bug:###whatsss n why is this ????
             temp_for_model_num_bug = True
         else:
             temp_for_model_num_bug = False
             global models_fitness
+            print("current time =>",self.current_time," model num => ",model_number,"fitness => ",current_fitness)
             models_fitness[model_number] = current_fitness
             model_number += 1
+            print("printing state dictory",self.state_dict)
         print("===> ", model_number)
         print(model_number)
         model_number%=kk.total_models
